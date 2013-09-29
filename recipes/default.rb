@@ -72,17 +72,24 @@ when 'debian'
   end
 
 when 'amazon', 'fedora', 'centos', 'redhat'
-  unless platform?('centos', 'redhat') && node['platform_version'].to_f >= 6.4
-    yum_key 'RPM-GPG-KEY-remi' do
-      url 'http://rpms.famillecollet.com/RPM-GPG-KEY-remi'
+  if platform?('fedora')
+    execute 'install remi' do
+      command 'rpm -ivh http://rpms.famillecollet.com/remi-release-19.rpm'
+      not_if { File.exists?('/etc/yum.repos.d/remi.repo') }
     end
+  else
+    unless platform?('centos', 'redhat') && node['platform_version'].to_f >= 6.4
+      yum_key 'RPM-GPG-KEY-remi' do
+        url 'http://rpms.famillecollet.com/RPM-GPG-KEY-remi'
+      end
 
-    yum_repository 'remi' do
-      description 'Remi'
-      url 'http://rpms.famillecollet.com/enterprise/$releasever/remi/$basearch/'
-      mirrorlist 'http://rpms.famillecollet.com/enterprise/$releasever/remi/mirror'
-      key 'RPM-GPG-KEY-remi'
-      action :add
+      yum_repository 'remi' do
+        description 'Remi'
+        url 'http://rpms.famillecollet.com/enterprise/$releasever/remi/$basearch/'
+        mirrorlist 'http://rpms.famillecollet.com/enterprise/$releasever/remi/mirror'
+        key 'RPM-GPG-KEY-remi'
+        action :add
+      end
     end
   end
 end
