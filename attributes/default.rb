@@ -1,4 +1,4 @@
-if node.platform_family == "rhel"
+if node.platform_family == "rhel" || node.platform_family == 'fedora'
   user = "apache"
   group = "apache"
   conf_dir = "/etc/php-fpm.d"
