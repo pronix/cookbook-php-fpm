@@ -94,7 +94,7 @@ when 'amazon', 'fedora', 'centos', 'redhat'
   end
 end
 
-if platform_family?("rhel")
+if platform_family?("rhel") || platform_family?("fedora")
   php_fpm_service_name = "php-fpm"
 else
   php_fpm_service_name = "php5-fpm"
@@ -102,6 +102,7 @@ end
 
 package php_fpm_service_name do
   action :upgrade
+  options '--enablerepo=remi'
 end
 
 template node['php-fpm']['conf_file'] do
